@@ -4,18 +4,19 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,21 +28,21 @@ import androidx.compose.ui.unit.dp
 import online.edrh.composable.ui.theme.ComposableTheme
 
 val template = listOf(
-    MyMessage("Juan", "Hola amigo"),
-    MyMessage("Pedro", "Hola amigo"),
-    MyMessage("Esteban", "Hola amigo"),
-    MyMessage("Itati", "Hola amigo"),
-    MyMessage("Leonardo", "Hola amigo"),
-    MyMessage("Oscar", "Hola amigo"),
-    MyMessage("Pablo", "Hola amigo"),
-    MyMessage("Ximena", "Hola amigo"),
-    MyMessage("Roxana", "Hola amigo"),
-    MyMessage("Liliana", "Hola amigo"),
-    MyMessage("Michael", "Hola amigo"),
-    MyMessage("Alan", "Hola amigo"),
-    MyMessage("Guillermo", "Hola amigo"),
-    MyMessage("Damian", "Hola amigo"),
-    MyMessage("Miguel", "Hola amigo"),
+    MyMessage("Juan", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla. Gravida dictum fusce ut placerat. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo. Sodales ut etiam sit amet nisl purus. Quis commodo odio aenean sed. Massa massa ultricies mi quis hendrerit dolor magna. At lectus urna duis convallis convallis tellus id interdum velit. Accumsan in nisl nisi scelerisque eu ultrices. Vulputate eu scelerisque felis imperdiet proin fermentum leo vel. Elementum nisi quis eleifend quam adipiscing vitae proin sagittis. Eget nulla facilisi etiam dignissim diam quis. Magna ac placerat vestibulum lectus mauris. Maecenas volutpat blandit aliquam etiam erat."),
+    MyMessage("Pedro", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla. Gravida dictum fusce ut placerat. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo. Sodales ut etiam sit amet nisl purus. Quis commodo "),
+    MyMessage("Esteban", "dio aenean sed. Massa massa ultricies mi quis hendrerit dolor magna. At lectus urna duis convallis convallis tellus id interdum velit. Accumsan in nisl nisi scelerisque eu ultrices. Vulputate eu scelerisque felis imperdiet proin fermentum leo ve"),
+    MyMessage("Itati", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Leonardo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Oscar", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Pablo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Ximena", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Roxana", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Liliana", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Michael", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Alan", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Guillermo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Damian", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
+    MyMessage("Miguel", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Leo vel fringilla est ullamcorper eget nulla."),
 )
 
 class MainActivity : ComponentActivity() {
@@ -67,20 +68,28 @@ fun renderUI(messages: List<MyMessage>) {
 
 @Composable
 fun myTexts(message: MyMessage) {
-    Column(modifier = Modifier.padding(start = 8.dp)) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.padding(start = 8.dp)
+        .clickable {
+            expanded = !expanded
+        }) {
         myText(message.title,
         MaterialTheme.colorScheme.primary,
         MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.size(10.dp))
         myText(message.body,
         MaterialTheme.colorScheme.onBackground,
-        MaterialTheme.typography.bodyMedium)
+        MaterialTheme.typography.bodyMedium,
+            if (expanded) Int.MAX_VALUE else 1
+        )
     }
 }
 
 @Composable
-fun myText(text: String, color: Color, style: TextStyle) {
-    Text(text, color = color, style = style)
+fun myText(text: String, color: Color, style: TextStyle, lines: Int = Int.MAX_VALUE) {
+    Text(text, color = color, style = style, maxLines = lines)
 }
 
 @Composable
